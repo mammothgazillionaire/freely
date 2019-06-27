@@ -14,25 +14,25 @@ const productSchema = new  schema({
     type: String,
     required: true
   },
-  size:{
-    type: String,
-    required: true
-  },
-  color:{
-    type: String,
-    required: true
-  },
   description : {
     life: {
       type: String
     },
-    price: {
-      type: Number,
+    color:{
+      type: String,
+      required: true
+    },
+    size:{
+      type: String,
       required: true
     }
   },
   image: {
     type: String
+  },
+  user: {
+    type: schema.Types.ObjectId,
+    ref: 'User'
   }
 });
 

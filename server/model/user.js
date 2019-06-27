@@ -6,55 +6,41 @@ const saltRounds = 10;
 const userSchema = new schema({
   name : {
     type : String,
-    // required: [true, 'cannot be blank'],
+    required: [true, 'cannot be blank'],
     minLength: 4,
     maxLength: 28
   },
   email:{
     type: String,
-    // required: [true, 'cannot be blank'],
+    required: [true, 'cannot be blank'],
     unique: true
   },
   password: {
     type: String,
-    // required: true,
-    minLenght: 6
+    minLength: 6
   },
   phoneNumber: {
-    type: Number,
-    // required: [true, 'cannot be blank'],
-    unique: true,
-    minLength : 8,
-    maxLength:16
+    type: String
   },
   address : {
     houseNumber: {
-      type: Number,
-      // required: [true, 'cannot be blank']
+      type: String
     },
     street: {
-      type: String,
-      // required: [true, 'cannot be blank'] 
+      type: String 
     },
     city: {
-        type: String,
-        // required: [true, 'cannot be blank'],
-    },
+        type: String
+          },
     coordinates:{
-      type: [Number, Number]
+      lat: Number,
+      long: Number
     },
     pincode: {
-      type: Number,
-      // required: [true, 'cannot be blank'],
-      minLength: 4,
-      maxLength: 12
+      type: Number
     },
     landmark: {
-      type: String,
-      // required: true,
-      minLength:4,
-      maxLength: 30
-    }
+      type: String    }
   },
   image: {
     type: String
@@ -67,11 +53,10 @@ const userSchema = new schema({
   }
 });
 
-const user = mongoose.model('User', userSchema);
 
 userSchema.methods.verifyPassword = function(userPassword, cb){
   bcrypt.compare(userPassword, this.password, function(err,res){
-    console.log(err,"in compare password");
+    // console.log(err,"in compare password");
     if(err) cb(err,false);
     cb(null,res);
   });
@@ -84,15 +69,14 @@ userSchema.pre('save', function(next){
 
   if(this.isModified(this.password)) return next();
 
-
-bcrypt.genSalt(saltRounds, function(err, salt) {
-  bcrypt.hash(password, salt, function(err, hash) {
-    self.password = hash;
-    next();
-  });
+  bcrypt.genSalt(saltRounds, function(err, salt) {
+    bcrypt.hash(password, salt, function(err, hash) {
+        self.password = hash;
+        next();
+      });
+    });
 });
 
-
-})
+const user = mongoose.model('User', userSchema);
 
 module.exports = user;

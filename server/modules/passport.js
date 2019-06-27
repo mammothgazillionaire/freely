@@ -41,15 +41,21 @@ module.exports = function(passport){
           callbackURL: "http://localhost:8888/auth/google/callback",
           passReqToCallback: true,
         },
-        function(request, accessToken, refreshToken, profile, done) {
+        function(accessToken, refreshToken, profile, done) {
+          // console.log(accessToken);
           console.log(profile, "profile in gooogleStrategy")
-          User.findOne({ googleID: profile.id }, (err,user) => {
+          User.findOne({ googleId: profile.id }, (err,user) => {
             if(err) return done(err);
             if(!user){
-              User.create({
-                googleID: profile.id,
+              const user = new User({
+                googleId: profile.id,
                 name: profile.displayName,
-                email: profile.emails[0].value})
+                email: profile.emails[0].value
+              })
+              user.save((err,user) => {
+                if(err) throw err;
+                return done(null,user);
+              })
             }
           })
       }          

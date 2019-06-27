@@ -3,11 +3,29 @@ require('dotenv').config()
 
 const User = require('../model/user');
 const passport = require('passport');
-// const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const jwt = require('jsonwebtoken');
 
 exports.registerUser = (req,res) => { 
-    User.create(req.body, (err,user) => {
+  console.log(req.body, "ghar ka no");
+  const user = {
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    image: req.body.image,
+    address: {
+      houseNumber: req.body.houseNumber,
+      street: req.body.street,
+      city:req.body.city,
+      coordinates : [req.body.lat || "",req.body.long || ""],
+      landmark: req.body.landmark,
+      pincode: req.body.pincode
+    },
+    phoneNumber:req.body.phoneNumber,
+    googleId:req.body.googleId || "",
+    googleAuthToken: req.body.googleAuthToken || ""
+  }
+  
+    User.create(user, (err,user) => {
       if(err) throw err;
       console.log(user,"user created");
       res.send(user)
@@ -27,7 +45,7 @@ exports.loginUser = (req,res, next) => {
     }
     const id = user._id;
     const { email } = user;
-    const json = jwt.sign({
+    const token = jwt.sign({
       id
     },
       { 'secret': process.env.AppSecret }

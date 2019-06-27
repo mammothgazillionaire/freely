@@ -1,0 +1,29 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .some,button,span{
+      display: block;
+      text-align: center;
+      margin: 1rem auto;
+    }
+  </style>
+</head>
+<body>
+  <form action="/api/register" method="post" class="some">
+  <input type="text" placeholder="name" class="some" name="name"/>
+  <input type="email" placeholder="email" class="some" name="email"/>
+  <input type="password" placeholder="password" class="some" name="password"/>
+  <span>address</span>
+  <input type="text" placeholder="contact number" name="phoneNumber"/>
+  <input type="text" placeholder="landmark" name="landmark"/><br>
+  <input type="text" placeholder="housenumber" name="houseNumber"/>
+  <input type="text" placeholder="city" name="city"/><br>
+  <input type="number" placeholder="pincode" name="pincode"/><br>
+  <button type="submit">register</button>
+  </form>
+</body>
+</html>
