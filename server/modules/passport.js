@@ -6,32 +6,32 @@ const User = require('../model/user');
 
 
 module.exports = function(passport){
+  
   passport.serializeUser(function(user,done){
+    // console.log('serializeUser');
     done(null, user._id);
   });
 
   passport.deserializeUser(function (id, done){
+    // console.log('deserializeUser');
     User.findById(id, function(err, user){
       done(err,user);
     })
   });
 
-  passport.use(new localStrategy(
-    function(email,password, done){
-      User.findOne({email: email}, function(err,user){
+  passport.use(new localStrategy({ usernameField: 'email' },function(email, password, done) {
+    User.findOne({email: email},function(err,user){
+      user.comparePassword(password,(err, isMatch) => {
         if(err){
-          return done(err);
+          return done(err)
+        };
+        if(!isMatch){
+          return done(null,false);
         }
-        if(!user){
-          return done(null,false, {message : "No such user"});
-        }
-        user.verifyPassword(password, function(err, isMatched){
-          if(!isMatched){
-            return done(null,fasle)
-          }
+        // console.log(user,"in passport.js")
           return done(null,user);
         })
-      })
+      })      
     }
   ))
 
@@ -39,15 +39,16 @@ module.exports = function(passport){
           clientID: process.env.clientId,
           clientSecret: process.env.clientSecret,
           callbackURL: "http://localhost:8888/auth/google/callback",
-          passReqToCallback: true,
+          // passReqToCallback: true,
         },
         function(accessToken, refreshToken, profile, done) {
-          // console.log(accessToken);
-          console.log(profile, "profile in gooogleStrategy")
+          // console.log(profile, "profile in gooogleStrategy");
           User.findOne({ googleId: profile.id }, (err,user) => {
             if(err) return done(err);
             if(!user){
+              // console.log(accessToken);
               const user = new User({
+                googleAuthToken: accessToken,
                 googleId: profile.id,
                 name: profile.displayName,
                 email: profile.emails[0].value

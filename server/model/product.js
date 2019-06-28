@@ -30,7 +30,7 @@ const productSchema = new  schema({
   image: {
     type: String
   },
-  user: {
+  owner: {
     type: schema.Types.ObjectId,
     ref: 'User'
   }

@@ -53,15 +53,6 @@ const userSchema = new schema({
   }
 });
 
-
-userSchema.methods.verifyPassword = function(userPassword, cb){
-  bcrypt.compare(userPassword, this.password, function(err,res){
-    // console.log(err,"in compare password");
-    if(err) cb(err,false);
-    cb(null,res);
-  });
-}
-
 userSchema.pre('save', function(next){
   var password = this.password;
   var self = this;
@@ -76,6 +67,18 @@ userSchema.pre('save', function(next){
       });
     });
 });
+
+userSchema.methods.comparePassword = function(userPassword, cb){
+  bcrypt.compare(userPassword, this.password, function(err,isMatch){
+    console.log(isMatch, "on 74 user scehma")
+    if(err) {
+      return cb(err, false);
+    }
+    return cb(null, isMatch);
+  });
+}
+
+
 
 const user = mongoose.model('User', userSchema);
 
